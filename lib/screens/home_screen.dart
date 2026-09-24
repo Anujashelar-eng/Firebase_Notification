@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter_firebase_notification/notification_services.dart";
+import "package:flutter_firebase_notification/services/notification_services.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
