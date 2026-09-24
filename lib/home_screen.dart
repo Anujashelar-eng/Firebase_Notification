@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_firebase_notification/notification_services.dart";
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -8,15 +9,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  NotificationServices notificationServices=NotificationServices();
+  NotificationServices notificationServices = NotificationServices();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    notificationServices.requestNotificationPermission();
+
+    notificationServices.getFCMToken();
   }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Home Screen"),
+      ),
+    );
   }
 }
