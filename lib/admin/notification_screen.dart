@@ -1,36 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../models/notification_model.dart';
 
 class NotificationScreen extends StatelessWidget {
-
   const NotificationScreen({super.key});
-
-  final List<NotificationModel> notifications = const [
-    NotificationModel(
-      title: "Festival Event",
-      body: "Ganesh Utsav starts at 6 PM",
-    ),
-    NotificationModel(
-      title: "Job Update",
-      body: "Python Developer Opening",
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Notifications"),
-      ),
-      body: ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
+      appBar: AppBar(title: const Text("Notifications")),
 
-          return ListTile(
-            leading: const Icon(Icons.notifications),
-            title: Text(notifications[index].title),
-            subtitle: Text(notifications[index].body),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("notifications")
+            .orderBy("createdAt", descending: true)
+            .snapshots(),
+
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text("No Notifications"),
+            );
+          }
+
+          final docs = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+
+              return ListTile(
+                leading: const Icon(Icons.notifications),
+                title: Text(docs[index]["title"]),
+                subtitle: Text(docs[index]["body"]),
+              );
+            },
           );
         },
       ),

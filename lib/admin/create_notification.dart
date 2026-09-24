@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateNotificationScreen extends StatefulWidget {
   const CreateNotificationScreen({super.key});
@@ -14,17 +15,23 @@ class _CreateNotificationScreenState
   final titleController = TextEditingController();
   final bodyController = TextEditingController();
 
-  void sendNotification() {
 
-    String title = titleController.text;
-    String body = bodyController.text;
 
-    print(title);
-    print(body);
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+//when the admin presses Send, a new document is created in Firestore.
+  Future<void> sendNotification() async {
+    await firestore.collection("notifications").add({
+      "title": titleController.text.trim(),
+      "body": bodyController.text.trim(),
+      "createdAt": FieldValue.serverTimestamp(),
+    });
+
+    titleController.clear();
+    bodyController.clear();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text("Notification Sent"),
+        content: Text("Notification Sent Successfully"),
       ),
     );
   }
