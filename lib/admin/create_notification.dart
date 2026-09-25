@@ -20,20 +20,25 @@ class _CreateNotificationScreenState
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 //when the admin presses Send, a new document is created in Firestore.
   Future<void> sendNotification() async {
-    await firestore.collection("notifications").add({
-      "title": titleController.text.trim(),
-      "body": bodyController.text.trim(),
-      "createdAt": FieldValue.serverTimestamp(),
-    });
+    try {
+      print("Button Clicked");
 
-    titleController.clear();
-    bodyController.clear();
+      await FirebaseFirestore.instance
+          .collection("notifications")
+          .add({
+        "title": titleController.text.trim(),
+        "body": bodyController.text.trim(),
+        "createdAt": FieldValue.serverTimestamp(),
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Notification Sent Successfully"),
-      ),
-    );
+      print("Firestore Success");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Saved")),
+      );
+    } catch (e) {
+      print("Firestore Error: $e");
+    }
   }
 
   @override

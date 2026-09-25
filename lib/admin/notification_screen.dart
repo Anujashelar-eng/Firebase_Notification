@@ -7,19 +7,21 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Notifications")),
-
+      appBar: AppBar(
+        title: const Text("Notifications"),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection("notifications")
             .orderBy("createdAt", descending: true)
             .snapshots(),
-
         builder: (context, snapshot) {
+          // Loading
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // No data
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
               child: Text("No Notifications"),
@@ -31,11 +33,13 @@ class NotificationScreen extends StatelessWidget {
           return ListView.builder(
             itemCount: docs.length,
             itemBuilder: (context, index) {
-
-              return ListTile(
-                leading: const Icon(Icons.notifications),
-                title: Text(docs[index]["title"]),
-                subtitle: Text(docs[index]["body"]),
+              return Card(
+                margin: const EdgeInsets.all(8),
+                child: ListTile(
+                  leading: const Icon(Icons.notifications),
+                  title: Text(docs[index]["title"]),
+                  subtitle: Text(docs[index]["body"]),
+                ),
               );
             },
           );
